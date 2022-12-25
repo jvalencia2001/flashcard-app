@@ -1,4 +1,4 @@
 [] Incorporate async/await
-[] Change checks back to constructors in API models.
+[] Change checks back to constructors in API models
 [] Incorporate Statuses
-[] Clean up commit names
+[x] Clean up commit names
