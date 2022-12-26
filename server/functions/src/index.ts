@@ -92,12 +92,12 @@ type responseContent = {
   objects: Array<{}>;
 };
 
-app.get("/get-collections", (req, res) => {
+app.get("/getCollectionsFromUser/:userID", (req, res) => {
   let retrieved: responseContent = { objects: [] };
 
   const query = db
     .collection("collections")
-    .where("userID", "==", req.body.userID);
+    .where("userID", "==", req.params.userID);
 
   query
     .get()
@@ -112,12 +112,12 @@ app.get("/get-collections", (req, res) => {
     });
 });
 
-app.get("/get-cards", (req, res) => {
+app.get("/getCardsFromCollection/:collectionID", (req, res) => {
   let retrieved: responseContent = { objects: [] };
 
   const query = db
     .collection("cards")
-    .where("collectionID", "==", req.body.collectionID);
+    .where("collectionID", "==", req.params.collectionID);
 
   query
     .get()
