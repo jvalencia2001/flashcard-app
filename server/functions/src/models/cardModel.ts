@@ -1,5 +1,3 @@
-//import { db } from "../firebaseSetup";
-
 class Card {
   private _name: string;
   private _content: string;

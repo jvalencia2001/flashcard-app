@@ -21,10 +21,10 @@ app.post("/create-user", (req, res) => {
   db.collection("users")
     .add(entry)
     .then((doc) => {
-      res.json({ message: "doc createed succesfully" });
+      res.status(200).json({ message: "User created succesfully" });
     })
     .catch((err) => {
-      res.status(500).json({ error: "something wrong" });
+      res.status(500).json({ error: "Couldn't create the user" });
     });
 });
 
@@ -38,7 +38,7 @@ app.post("/create-collection", (req, res) => {
   try {
     newCollection.checkCollection();
   } catch (error) {
-    res.json(error);
+    res.status(500).json(error);
     return;
   }
 
@@ -47,10 +47,13 @@ app.post("/create-collection", (req, res) => {
   db.collection("collections")
     .add(entry)
     .then((doc) => {
-      res.json({ message: "doc createed succesfully" });
+      doc.update({ collectionID: doc.id }).catch((err) => {
+        res.status(500).json({ error: "Couldn't add id to collection" });
+      });
+      res.status(500).json({ message: "Collection created succesfully" });
     })
     .catch((err) => {
-      res.status(500).json({ error: "something wrong." });
+      res.status(500).json({ error: "Couldn't create the collection" });
     });
 });
 
@@ -64,7 +67,7 @@ app.post("/create-card", (req, res) => {
   try {
     newCard.checkCard();
   } catch (error) {
-    res.json(error);
+    res.status(500).json(error);
     return;
   }
 
@@ -74,14 +77,14 @@ app.post("/create-card", (req, res) => {
     .add(entry)
     .then((doc) => {
       doc.update({ cardID: doc.id }).catch((err) => {
-        res.json({ error: "unable to add id to card" });
+        res.status(500).json({ error: "Couldn't add id to card" });
         return;
       });
 
-      res.json({ message: "doc createed succesfully" });
+      res.status(200).json({ message: "Card created succesfully" });
     })
     .catch((err) => {
-      res.status(500).json({ error: "something wrong." });
+      res.status(500).json({ error: "Couldn't create the card" });
     });
 });
 

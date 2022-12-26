@@ -1,5 +1,3 @@
-import { db } from "../firebaseSetup";
-
 class Collection {
   private _name: string;
   private _description?: string;
@@ -19,7 +17,6 @@ class Collection {
     if (nameCheck == 1) throw { error: "Name is empty." };
     else if (nameCheck == 2)
       throw { error: "Name has more than 50 characters." };
-    else if (nameCheck == 3) throw { error: "Collection name must be unique." };
 
     if (this.description) {
       const descCheck = this._checkDesc(this.description);
@@ -33,14 +30,6 @@ class Collection {
     if (!nameAttempt) return 1;
     if (nameAttempt.length > 50) return 2;
 
-    let empty = 0;
-    const query = db.collection("collections").where("name", "==", this.name);
-
-    query.get().then((querySnapshot) => {
-      if (querySnapshot.empty) empty = 1;
-    });
-
-    if (empty == 0) return 3;
     return 0;
   }
 
