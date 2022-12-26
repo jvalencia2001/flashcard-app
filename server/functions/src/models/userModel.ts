@@ -20,6 +20,25 @@ class User {
     this._createdAt = Date.now();
   }
 
+  forDatabase() {
+    const jsonFormat = {
+      id: this.uuid,
+      displayName: this.displayName,
+      handle: this.handle,
+      email: this.email,
+      createdAt: this.createdAt,
+    };
+    return jsonFormat;
+  }
+
+  set displayName(newName: string) {
+    this._displayName = newName;
+  }
+
+  set email(newEmail: string) {
+    this._email = newEmail;
+  }
+
   get uuid(): string {
     return this._uuid;
   }
@@ -38,25 +57,6 @@ class User {
 
   get createdAt(): number {
     return this._createdAt;
-  }
-
-  set displayName(newName: string) {
-    this._displayName = newName;
-  }
-
-  set email(newEmail: string) {
-    this._email = newEmail;
-  }
-
-  forDatabase() {
-    const jsonFormat = {
-      id: this.uuid,
-      displayName: this.displayName,
-      handle: this.handle,
-      email: this.email,
-      createdAt: this.createdAt,
-    };
-    return jsonFormat;
   }
 }
 

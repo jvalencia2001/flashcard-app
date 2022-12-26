@@ -26,6 +26,17 @@ class Collection {
     } else this._description = "";
   }
 
+  forDatabase() {
+    const jsonFormat = {
+      name: this.name,
+      userID: this.userID,
+      desc: this.description,
+      createdAt: this.createdAt,
+    };
+
+    return jsonFormat;
+  }
+
   private _checkName(nameAttempt: string): number {
     if (!nameAttempt) return 1;
     if (nameAttempt.length > 50) return 2;
@@ -37,24 +48,6 @@ class Collection {
     if (descAttempt.length > 300) return 1;
 
     return 0;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  get userID(): string {
-    return this._userID;
-  }
-
-  get description(): string {
-    if (this._description) return this._description;
-
-    return "";
-  }
-
-  get createdAt(): number {
-    return this._createdAt;
   }
 
   set name(newName: string) {
@@ -79,15 +72,22 @@ class Collection {
     }
   }
 
-  forDatabase() {
-    const jsonFormat = {
-      name: this.name,
-      userID: this.userID,
-      desc: this.description,
-      createdAt: this.createdAt,
-    };
+  get name(): string {
+    return this._name;
+  }
 
-    return jsonFormat;
+  get userID(): string {
+    return this._userID;
+  }
+
+  get description(): string {
+    if (this._description) return this._description;
+
+    return "";
+  }
+
+  get createdAt(): number {
+    return this._createdAt;
   }
 }
 

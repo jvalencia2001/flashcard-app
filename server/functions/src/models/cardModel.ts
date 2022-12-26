@@ -24,6 +24,17 @@ class Card {
       throw { error: "Content is more than 300 characters." };
   }
 
+  forDatabase() {
+    const jsonFormat = {
+      name: this.name,
+      content: this.content,
+      collectionID: this.collectionID,
+      createdAt: this.createdAt,
+    };
+
+    return jsonFormat;
+  }
+
   private _checkName(nameAttempt: string): number {
     if (!nameAttempt) return 1;
     if (nameAttempt.length > 50) return 2;
@@ -36,22 +47,6 @@ class Card {
     if (contentAttempt.length > 300) return 2;
 
     return 0;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  get content(): string {
-    return this._content;
-  }
-
-  get collectionID(): string {
-    return this._collectionID;
-  }
-
-  get createdAt(): number {
-    return this._createdAt;
   }
 
   set name(newName: string) {
@@ -72,15 +67,20 @@ class Card {
     this._content = newContent;
   }
 
-  forDatabase() {
-    const jsonFormat = {
-      name: this.name,
-      content: this.content,
-      collectionID: this.collectionID,
-      createdAt: this.createdAt,
-    };
+  get name(): string {
+    return this._name;
+  }
 
-    return jsonFormat;
+  get content(): string {
+    return this._content;
+  }
+
+  get collectionID(): string {
+    return this._collectionID;
+  }
+
+  get createdAt(): number {
+    return this._createdAt;
   }
 }
 
