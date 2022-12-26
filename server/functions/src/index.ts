@@ -92,8 +92,26 @@ type responseContent = {
   objects: Array<{}>;
 };
 
+app.get("/getInformationFromUser/:userID", (req, res) => {
+  let response: responseContent = { objects: [] };
+
+  const query = db.collection("users").where("id", "==", req.params.userID);
+
+  query
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.docs.forEach((doc) => {
+        response.objects.push(doc.data());
+      });
+      res.status(200).json(response);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Couldn't query the database." });
+    });
+});
+
 app.get("/getCollectionsFromUser/:userID", (req, res) => {
-  let retrieved: responseContent = { objects: [] };
+  let response: responseContent = { objects: [] };
 
   const query = db
     .collection("collections")
@@ -103,17 +121,17 @@ app.get("/getCollectionsFromUser/:userID", (req, res) => {
     .get()
     .then((querySnapshot) => {
       querySnapshot.docs.forEach((doc) => {
-        retrieved.objects.push(doc.data());
+        response.objects.push(doc.data());
       });
-      res.json(retrieved);
+      res.status(200).json(response);
     })
     .catch((err) => {
-      res.json(err);
+      res.status(500).json({ error: "Couldn't query the database." });
     });
 });
 
 app.get("/getCardsFromCollection/:collectionID", (req, res) => {
-  let retrieved: responseContent = { objects: [] };
+  let response: responseContent = { objects: [] };
 
   const query = db
     .collection("cards")
@@ -123,12 +141,12 @@ app.get("/getCardsFromCollection/:collectionID", (req, res) => {
     .get()
     .then((querySnapshot) => {
       querySnapshot.docs.forEach((doc) => {
-        retrieved.objects.push(doc.data());
+        response.objects.push(doc.data());
       });
-      res.json(retrieved);
+      res.status(200).json(response);
     })
     .catch((err) => {
-      res.json(err);
+      res.status(500).json({ error: "Couldn't query the database." });
     });
 });
 
