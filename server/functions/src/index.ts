@@ -35,13 +35,6 @@ app.post("/newCollection", (req, res) => {
     req.body.description
   );
 
-  try {
-    newCollection.checkCollection();
-  } catch (error) {
-    res.status(500).json(error);
-    return;
-  }
-
   const entry = newCollection.forDatabase();
 
   db.collection("collections")
@@ -63,13 +56,6 @@ app.post("/newCard", (req, res) => {
     req.body.content,
     req.body.collectionID
   );
-
-  try {
-    newCard.checkCard();
-  } catch (error) {
-    res.status(500).json(error);
-    return;
-  }
 
   const entry = newCard.forDatabase();
 
