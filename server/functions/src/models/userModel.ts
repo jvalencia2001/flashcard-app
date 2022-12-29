@@ -11,13 +11,14 @@ class User {
     uuid: string,
     displayName: string,
     handle: string,
-    email: string
+    email: string,
+    createdAt?: number
   ) {
     this._uuid = uuid;
     this._displayName = displayName;
     this._handle = handle;
     this._email = email;
-    this._createdAt = Date.now();
+    this._createdAt = createdAt ? createdAt : Date.now();
   }
 
   forDatabase() {

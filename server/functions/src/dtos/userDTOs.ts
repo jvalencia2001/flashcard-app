@@ -9,13 +9,14 @@ export class UserDTO {
     uuid: string,
     displayName: string,
     handle: string,
-    email: string
+    email: string,
+    date: number
   ) {
     this._uuid = uuid;
     this._displayName = displayName;
     this._handle = handle;
     this._email = email;
-    this._createdAt = Date.now();
+    this._createdAt = date;
   }
 }
 
