@@ -1,31 +1,34 @@
 import * as functions from "firebase-functions";
 import * as express from "express";
 import { db } from "./firebaseSetup";
-import User from "./models/userModel";
 import Collection from "./models/collectionModel";
 import Card from "./models/cardModel";
+import { CreateUserDTO, UpdateUserDTO, UserDTO } from "./dtos/userDTOs";
+import { createUser, getUser, updateUser } from "./services/userServices";
+import { ServiceResponse } from "./dtos/serviceResponseDTO";
+//import { service } from "firebase-functions/v1/analytics";
+//import { ServiceResponse } from "./dtos/serviceResponseDTO";
 
 const app = express();
 app.use(express.json());
 
-app.post("/newUser", (req, res) => {
-  const newUser = new User(
+app.post("/newUser", async (req, res) => {
+  const newUser = new CreateUserDTO(
     req.body.uuid,
     req.body.displayName,
     req.body.handle,
     req.body.email
   );
 
-  const entry = newUser.forDatabase();
-
-  db.collection("users")
-    .add(entry)
-    .then((doc) => {
-      res.status(200).json({ message: "User created succesfully" });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't create the user" });
-    });
+  await createUser(newUser).then(
+    (serviceResponse: ServiceResponse<UserDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(201).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.post("/newCollection", (req, res) => {
@@ -78,22 +81,16 @@ type responseContent = {
   objects: Array<{}>;
 };
 
-app.get("/users/:userID", (req, res) => {
-  let response: responseContent = { objects: [] };
-
-  const query = db.collection("users").where("id", "==", req.params.userID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.docs.forEach((doc) => {
-        response.objects.push(doc.data());
-      });
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+app.get("/users/:userID", async (req, res) => {
+  await getUser(req.params.userID).then(
+    (serviceResponse: ServiceResponse<UserDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(200).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.get("/users/:userID/collections", (req, res) => {
@@ -174,45 +171,22 @@ app.get("/cards/:cardID", (req, res) => {
     });
 });
 
-app.put("/users/:userID", (req, res) => {
-  let response: responseContent = { objects: [] };
+app.put("/users/:userID", async (req, res) => {
+  const updatedUser = new UpdateUserDTO(
+    req.body.displayName ? req.body.displayName : "",
+    req.body.handle ? req.body.handle : "",
+    req.body.email ? req.body.email : ""
+  );
 
-  const query = db.collection("users").where("id", "==", req.params.userID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      if (querySnapshot.empty)
-        res.status(500).json({ error: "Couldn't find the user." });
-      querySnapshot.docs.forEach((doc) => {
-        const docRef = doc.ref;
-        docRef
-          .update({
-            displayName: req.body.newDisplayName
-              ? req.body.newDisplayName
-              : doc.get("displayName"),
-            email: req.body.newDesc ? req.body.newDesc : doc.get("email"),
-            handle: req.body.newHandle ? req.body.newHandle : doc.get("handle"),
-          })
-          .catch((err) => {
-            res.status(500).json({ error: "Couldn't find user." });
-          });
-        response.objects.push({
-          updatedUserID: req.params.userID,
-          newDisplayName: req.body.newDisplayName
-            ? req.body.newDisplayName
-            : doc.get("displayName"),
-          newEmail: req.body.newDesc ? req.body.newDesc : doc.get("email"),
-          newHandle: req.body.newHandle
-            ? req.body.newHandle
-            : doc.get("handle"),
-        });
-        res.status(200).json(response);
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+  await updateUser(req.params.userID, updatedUser).then(
+    (serviceResponse: ServiceResponse<UserDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(200).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.put("/collections/:collectionID", (req, res) => {
