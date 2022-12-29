@@ -56,7 +56,7 @@ export async function getUser(id: string): Promise<ServiceResponse<UserDTO>> {
   await query
     .get()
     .then((querySnapshot) => {
-      if (!querySnapshot.empty || querySnapshot.size > 1) {
+      if (!querySnapshot.empty && !(querySnapshot.size > 1)) {
         querySnapshot.docs.forEach((doc) => {
           serviceResponse = new ServiceResponse(
             "Get User Service",
@@ -108,7 +108,7 @@ export async function updateUser(
   await query
     .get()
     .then((querySnapshot) => {
-      if (!querySnapshot.empty || querySnapshot.size > 1) {
+      if (!querySnapshot.empty && !(querySnapshot.size > 1)) {
         querySnapshot.docs.forEach((doc) => {
           const newDisplayName =
             updatedUserDTO._displayName !== ""
@@ -166,6 +166,65 @@ export async function updateUser(
         } else {
           serviceResponse = new ServiceResponse(
             "Update User Service",
+            "Couldn't find the user."
+          );
+        }
+      }
+    })
+    .catch((err) => {
+      serviceResponse = new ServiceResponse(
+        "Get User Service",
+        "Error querying the database."
+      );
+      return serviceResponse;
+    });
+
+  return serviceResponse;
+}
+
+export async function deleteUser(
+  id: string
+): Promise<ServiceResponse<UserDTO>> {
+  var serviceResponse: ServiceResponse<UserDTO> = new ServiceResponse(
+    "Delete User Service",
+    "Couldn't query the database."
+  );
+
+  const query = db.collection("users").where("id", "==", id);
+  await query
+    .get()
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty && !(querySnapshot.size > 1)) {
+        querySnapshot.docs.forEach((doc) => {
+          const docRef = doc.ref;
+          docRef.delete().catch((err) => {
+            serviceResponse = new ServiceResponse(
+              "Update User Service",
+              "Couldn't delete user."
+            );
+            return serviceResponse;
+          });
+          serviceResponse = new ServiceResponse(
+            "Delete User Service",
+            "Succesfully deleted user.",
+            new UserDTO(
+              doc.get("id"),
+              doc.get("displayName"),
+              doc.get("handle"),
+              doc.get("email"),
+              doc.get("createdAt")
+            )
+          );
+        });
+      } else {
+        if (querySnapshot.size > 1) {
+          serviceResponse = new ServiceResponse(
+            "Delete User Service",
+            "There is more than one user with this id."
+          );
+        } else {
+          serviceResponse = new ServiceResponse(
+            "Delete User Service",
             "Couldn't find the user."
           );
         }

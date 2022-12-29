@@ -4,7 +4,12 @@ import { db } from "./firebaseSetup";
 import Collection from "./models/collectionModel";
 import Card from "./models/cardModel";
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from "./dtos/userDTOs";
-import { createUser, getUser, updateUser } from "./services/userServices";
+import {
+  createUser,
+  deleteUser,
+  getUser,
+  updateUser,
+} from "./services/userServices";
 import { ServiceResponse } from "./dtos/serviceResponseDTO";
 //import { service } from "firebase-functions/v1/analytics";
 //import { ServiceResponse } from "./dtos/serviceResponseDTO";
@@ -259,28 +264,16 @@ app.put("/cards/:cardID", (req, res) => {
     });
 });
 
-app.delete("/users/:userID", (req, res) => {
-  let response: responseContent = { objects: [] };
-
-  const query = db.collection("users").where("id", "==", req.params.userID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      if (querySnapshot.empty)
-        res.status(500).json({ error: "Couldn't find the user." });
-      querySnapshot.docs.forEach((doc) => {
-        const docRef = doc.ref;
-        docRef.delete();
-        response.objects.push({
-          deletedUserID: req.params.userID,
-        });
-        res.status(200).json(response);
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+app.delete("/users/:userID", async (req, res) => {
+  await deleteUser(req.params.userID).then(
+    (serviceResponse: ServiceResponse<UserDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(200).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.delete("/collections/:collectionID", (req, res) => {
