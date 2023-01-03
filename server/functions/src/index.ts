@@ -17,7 +17,7 @@ import { ServiceResponse } from "./dtos/serviceResponseDTO";
 const app = express();
 app.use(express.json());
 
-app.post("/newUser", async (req, res) => {
+app.post("/users", async (req, res) => {
   const newUser = new CreateUserDTO(
     req.body.uuid,
     req.body.displayName,
@@ -36,7 +36,7 @@ app.post("/newUser", async (req, res) => {
   );
 });
 
-app.post("/newCollection", (req, res) => {
+app.post("/collections", (req, res) => {
   const newCollection = new Collection(
     req.body.name,
     req.body.userID,
@@ -58,7 +58,7 @@ app.post("/newCollection", (req, res) => {
     });
 });
 
-app.post("/newCard", (req, res) => {
+app.post("/cards", (req, res) => {
   const newCard = new Card(
     req.body.name,
     req.body.content,
