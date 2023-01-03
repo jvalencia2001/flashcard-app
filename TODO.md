@@ -5,4 +5,5 @@
 [x] Incorporate html Statuses  
 [x] Clean up commit names  
 [] Create rest of the services  
-[] Add cors middleware
+[] Add cors middleware  
+[] Refactor partial update into patch requests.
