@@ -149,7 +149,7 @@
   }
   ```
 
-  - ### **DELETE** @ **/users/:userID**
+- ### **DELETE** @ **/users/:userID**
 
   - #### _Use this endpoint to delete a specific user entity from the database._
 
@@ -302,7 +302,7 @@
   }
   ```
 
-  - ### **DELETE** @ **/collections/:collectionID**
+- ### **DELETE** @ **/collections/:collectionID**
 
   - #### _Use this endpoint to delete a specific Collection entity from the database._
 
@@ -420,7 +420,7 @@
   }
   ```
 
-  - ### **DELETE** @ **/cards/:cardID**
+- ### **DELETE** @ **/cards/:cardID**
 
   - #### _Use this endpoint to delete a specific Card entity from the database._
 
