@@ -223,7 +223,7 @@ export async function updateUser(
     })
     .catch((err) => {
       serviceResponse = new ServiceResponse(
-        "Get User Service",
+        "Update User Service",
         "Error querying the database."
       );
       return serviceResponse;
@@ -282,7 +282,7 @@ export async function deleteUser(
     })
     .catch((err) => {
       serviceResponse = new ServiceResponse(
-        "Get User Service",
+        "Delete User Service",
         "Error querying the database."
       );
       return serviceResponse;

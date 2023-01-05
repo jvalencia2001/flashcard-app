@@ -174,7 +174,7 @@ export async function updateCollection(
           const newName =
             updatedCollectionDTO.name !== ""
               ? updatedCollectionDTO.name
-              : doc.get("displayName");
+              : doc.get("name");
           const newDescription =
             updatedCollectionDTO.description !== ""
               ? updatedCollectionDTO.description
@@ -233,7 +233,7 @@ export async function updateCollection(
     })
     .catch((err) => {
       serviceResponse = new ServiceResponse(
-        "Get Collection Service",
+        "Update Collection Service",
         "Error querying the database."
       );
       return serviceResponse;
@@ -292,7 +292,7 @@ export async function deleteCollection(
     })
     .catch((err) => {
       serviceResponse = new ServiceResponse(
-        "Get Collection Service",
+        "Delete Collection Service",
         "Error querying the database."
       );
       return serviceResponse;
