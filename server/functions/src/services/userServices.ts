@@ -1,4 +1,5 @@
 //import { user } from "firebase-functions/v1/auth";
+import { CollectionDTO } from "../dtos/collectionDTOs";
 import { ServiceResponse } from "../dtos/serviceResponseDTO";
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../dtos/userDTOs";
 import { db } from "../firebaseSetup";
@@ -87,6 +88,56 @@ export async function getUser(id: string): Promise<ServiceResponse<UserDTO>> {
     .catch((err) => {
       serviceResponse = new ServiceResponse(
         "Get User Service",
+        "Error querying the database."
+      );
+      return serviceResponse;
+    });
+
+  return serviceResponse;
+}
+
+export async function getUserCollections(
+  id: string
+): Promise<ServiceResponse<Array<CollectionDTO>>> {
+  var serviceResponse: ServiceResponse<Array<CollectionDTO>> =
+    new ServiceResponse(
+      "Get User's Collections Service",
+      "Couldn't query the database."
+    );
+
+  const query = db.collection("collections").where("userID", "==", id);
+
+  await query
+    .get()
+    .then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        var collections: Array<CollectionDTO> = new Array<CollectionDTO>();
+        querySnapshot.docs.forEach((doc) => {
+          collections.push(
+            new CollectionDTO(
+              doc.get("name"),
+              doc.get("userID"),
+              doc.get("collectionID"),
+              doc.get("createdAt"),
+              doc.get("desc")
+            )
+          );
+        });
+        serviceResponse = new ServiceResponse(
+          "Get User's Collections Service",
+          "Succesfully retrieved user's collections.",
+          collections
+        );
+      } else {
+        serviceResponse = new ServiceResponse(
+          "Get User's Collections Service",
+          "Couldn't find the user."
+        );
+      }
+    })
+    .catch((err) => {
+      serviceResponse = new ServiceResponse(
+        "Get User's Collections Service",
         "Error querying the database."
       );
       return serviceResponse;

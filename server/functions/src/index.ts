@@ -8,9 +8,11 @@ import {
   createUser,
   deleteUser,
   getUser,
+  getUserCollections,
   updateUser,
 } from "./services/userServices";
 import { ServiceResponse } from "./dtos/serviceResponseDTO";
+import { CollectionDTO } from "./dtos/collectionDTOs";
 //import { service } from "firebase-functions/v1/analytics";
 //import { ServiceResponse } from "./dtos/serviceResponseDTO";
 
@@ -98,24 +100,16 @@ app.get("/users/:userID", async (req, res) => {
   );
 });
 
-app.get("/users/:userID/collections", (req, res) => {
-  let response: responseContent = { objects: [] };
-
-  const query = db
-    .collection("collections")
-    .where("userID", "==", req.params.userID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.docs.forEach((doc) => {
-        response.objects.push(doc.data());
-      });
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+app.get("/users/:userID/collections", async (req, res) => {
+  await getUserCollections(req.params.userID).then(
+    (serviceResponse: ServiceResponse<Array<CollectionDTO>>) => {
+      if (serviceResponse.serviceData) {
+        res.status(200).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.get("/collections/:collectionID", (req, res) => {

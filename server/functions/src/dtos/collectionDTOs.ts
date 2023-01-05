@@ -3,12 +3,20 @@ export class CollectionDTO {
   _description?: string;
   _userID: string;
   _createdAt: number;
+  _collectionID: string;
 
-  constructor(name: string, userID: string, description?: string) {
+  constructor(
+    name: string,
+    userID: string,
+    date: number,
+    id: string,
+    description?: string
+  ) {
     this._name = name;
     this._userID = userID;
     this._description = description;
-    this._createdAt = Date.now();
+    this._createdAt = date;
+    this._collectionID = id;
   }
 }
 
