@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import * as express from "express";
 import { db } from "./firebaseSetup";
-import Card from "./models/cardModel";
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from "./dtos/userDTOs";
 import {
   createUser,
@@ -23,9 +22,13 @@ import {
   getCollectionCards,
   updateCollection,
 } from "./services/collectionServices";
-import { CardDTO } from "./dtos/cardDTOs";
-//import { service } from "firebase-functions/v1/analytics";
-//import { ServiceResponse } from "./dtos/serviceResponseDTO";
+import { CardDTO, CreateCardDTO, UpdateCardDTO } from "./dtos/cardDTOs";
+import {
+  createCard,
+  deleteCard,
+  getCard,
+  updateCard,
+} from "./services/cardServices";
 
 const app = express();
 app.use(express.json());
@@ -67,33 +70,23 @@ app.post("/collections", async (req, res) => {
   );
 });
 
-app.post("/cards", (req, res) => {
-  const newCard = new Card(
+app.post("/cards", async (req, res) => {
+  const newCard = new CreateCardDTO(
     req.body.name,
     req.body.content,
     req.body.collectionID
   );
 
-  const entry = newCard.forDatabase();
-
-  db.collection("cards")
-    .add(entry)
-    .then((doc) => {
-      doc.update({ cardID: doc.id }).catch((err) => {
-        res.status(500).json({ error: "Couldn't add id to card" });
-        return;
-      });
-
-      res.status(200).json({ message: "Card created succesfully" });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't create the card" });
-    });
+  await createCard(newCard).then(
+    (serviceResponse: ServiceResponse<CardDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(201).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
-
-type responseContent = {
-  objects: Array<{}>;
-};
 
 app.get("/users/:userID", async (req, res) => {
   await getUser(req.params.userID).then(
@@ -143,22 +136,16 @@ app.get("/collections/:collectionID/cards", async (req, res) => {
   );
 });
 
-app.get("/cards/:cardID", (req, res) => {
-  let response: responseContent = { objects: [] };
-
-  const query = db.collection("cards").where("cardID", "==", req.params.cardID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.docs.forEach((doc) => {
-        response.objects.push(doc.data());
-      });
-      res.status(200).json(response);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+app.get("/cards/:cardID", async (req, res) => {
+  await getCard(req.params.cardID).then(
+    (serviceResponse: ServiceResponse<CardDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(201).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.put("/users/:userID", async (req, res) => {
@@ -197,43 +184,22 @@ app.put("/collections/:collectionID", async (req, res) => {
   );
 });
 
-app.put("/cards/:cardID", (req, res) => {
-  let response: responseContent = { objects: [] };
+app.put("/cards/:cardID", async (req, res) => {
+  const updatedCard = new UpdateCardDTO(
+    req.body.name ? req.body.name : "",
+    req.body.content ? req.body.content : "",
+    req.body.collectionID ? req.body.collectionID : ""
+  );
 
-  const query = db.collection("cards").where("cardID", "==", req.params.cardID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      if (querySnapshot.empty)
-        res.status(500).json({ error: "Couldn't find the card." });
-      querySnapshot.docs.forEach((doc) => {
-        const docRef = doc.ref;
-        docRef.update({
-          name: req.body.newName ? req.body.newName : doc.get("name"),
-          content: req.body.newContent
-            ? req.body.newContent
-            : doc.get("content"),
-          collectionID: req.body.newCollectionID
-            ? req.body.newCollectionID
-            : doc.get("collectionID"),
-        });
-        response.objects.push({
-          cardID: req.params.cardID,
-          newName: req.body.newName ? req.body.newName : doc.get("name"),
-          newContent: req.body.newContent
-            ? req.body.newContent
-            : doc.get("content"),
-          newCollectionID: req.body.newCollectionID
-            ? req.body.newCollectionID
-            : doc.get("collectionID"),
-        });
-        res.status(200).json(response);
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+  await updateCard(req.params.cardID, updatedCard).then(
+    (serviceResponse: ServiceResponse<CardDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(200).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 app.delete("/users/:userID", async (req, res) => {
@@ -260,28 +226,16 @@ app.delete("/collections/:collectionID", async (req, res) => {
   );
 });
 
-app.delete("/cards/:cardID", (req, res) => {
-  let response: responseContent = { objects: [] };
-
-  const query = db.collection("cards").where("cardID", "==", req.params.cardID);
-
-  query
-    .get()
-    .then((querySnapshot) => {
-      if (querySnapshot.empty)
-        res.status(500).json({ error: "Couldn't find the card" });
-      querySnapshot.docs.forEach((doc) => {
-        const docRef = doc.ref;
-        docRef.delete();
-        response.objects.push({
-          deletedUserID: req.params.cardID,
-        });
-        res.status(200).json(response);
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({ error: "Couldn't query the database." });
-    });
+app.delete("/cards/:cardID", async (req, res) => {
+  await deleteCard(req.params.cardID).then(
+    (serviceResponse: ServiceResponse<CardDTO>) => {
+      if (serviceResponse.serviceData) {
+        res.status(200).json(serviceResponse);
+      } else {
+        res.status(500).json(serviceResponse);
+      }
+    }
+  );
 });
 
 exports.api = functions.https.onRequest(app);

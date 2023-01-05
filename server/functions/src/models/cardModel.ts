@@ -4,11 +4,16 @@ class Card {
   private _collectionID: string;
   private _createdAt: number;
 
-  constructor(name: string, content: string, collectionID: string) {
+  constructor(
+    name: string,
+    content: string,
+    collectionID: string,
+    date?: number
+  ) {
     this._name = name;
     this._content = content;
     this._collectionID = collectionID;
-    this._createdAt = Date.now();
+    this._createdAt = date ? date : Date.now();
   }
 
   forDatabase() {
