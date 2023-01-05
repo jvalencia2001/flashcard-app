@@ -1,9 +1,9 @@
 export class UserDTO {
-  _uuid: string;
-  _displayName: string;
-  _handle: string;
-  _email: string;
-  _createdAt: number;
+  uuid: string;
+  displayName: string;
+  handle: string;
+  email: string;
+  createdAt: number;
 
   constructor(
     uuid: string,
@@ -12,19 +12,19 @@ export class UserDTO {
     email: string,
     date: number
   ) {
-    this._uuid = uuid;
-    this._displayName = displayName;
-    this._handle = handle;
-    this._email = email;
-    this._createdAt = date;
+    this.uuid = uuid;
+    this.displayName = displayName;
+    this.handle = handle;
+    this.email = email;
+    this.createdAt = date;
   }
 }
 
 export class CreateUserDTO {
-  _uuid: string;
-  _displayName: string;
-  _handle: string;
-  _email: string;
+  uuid: string;
+  displayName: string;
+  handle: string;
+  email: string;
 
   constructor(
     uuid: string,
@@ -32,21 +32,21 @@ export class CreateUserDTO {
     handle: string,
     email: string
   ) {
-    this._uuid = uuid;
-    this._displayName = displayName;
-    this._handle = handle;
-    this._email = email;
+    this.uuid = uuid;
+    this.displayName = displayName;
+    this.handle = handle;
+    this.email = email;
   }
 }
 
 export class UpdateUserDTO {
-  _displayName: string;
-  _handle: string;
-  _email: string;
+  displayName: string;
+  handle: string;
+  email: string;
 
   constructor(displayName: string, handle: string, email: string) {
-    this._displayName = displayName;
-    this._handle = handle;
-    this._email = email;
+    this.displayName = displayName;
+    this.handle = handle;
+    this.email = email;
   }
 }

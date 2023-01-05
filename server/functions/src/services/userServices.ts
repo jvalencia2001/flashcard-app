@@ -1,4 +1,3 @@
-//import { user } from "firebase-functions/v1/auth";
 import { CollectionDTO } from "../dtos/collectionDTOs";
 import { ServiceResponse } from "../dtos/serviceResponseDTO";
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from "../dtos/userDTOs";
@@ -9,15 +8,15 @@ export async function createUser(
   newUser: CreateUserDTO
 ): Promise<ServiceResponse<UserDTO>> {
   var serviceResponse: ServiceResponse<UserDTO> = new ServiceResponse(
-    "Get User Service",
+    "Create User Service",
     "Couldn't query the database."
   );
 
   const entry = new User(
-    newUser._uuid,
-    newUser._displayName,
-    newUser._handle,
-    newUser._email
+    newUser.uuid,
+    newUser.displayName,
+    newUser.handle,
+    newUser.email
   );
 
   await db
@@ -25,8 +24,8 @@ export async function createUser(
     .add(entry.forDatabase())
     .then((doc) => {
       serviceResponse = new ServiceResponse(
-        "Get User Service",
-        "Succesfully retrieved user.",
+        "Create User Service",
+        "Succesfully created User.",
         new UserDTO(
           entry.uuid,
           entry.displayName,
@@ -131,7 +130,7 @@ export async function getUserCollections(
       } else {
         serviceResponse = new ServiceResponse(
           "Get User's Collections Service",
-          "Couldn't find the user."
+          "Couldn't find any collections from this user."
         );
       }
     })
@@ -162,16 +161,16 @@ export async function updateUser(
       if (!querySnapshot.empty && !(querySnapshot.size > 1)) {
         querySnapshot.docs.forEach((doc) => {
           const newDisplayName =
-            updatedUserDTO._displayName !== ""
-              ? updatedUserDTO._displayName
+            updatedUserDTO.displayName !== ""
+              ? updatedUserDTO.displayName
               : doc.get("displayName");
           const newEmail =
-            updatedUserDTO._email !== ""
-              ? updatedUserDTO._email
+            updatedUserDTO.email !== ""
+              ? updatedUserDTO.email
               : doc.get("email");
           const newHandle =
-            updatedUserDTO._handle !== ""
-              ? updatedUserDTO._handle
+            updatedUserDTO.handle !== ""
+              ? updatedUserDTO.handle
               : doc.get("handle");
 
           const updatedUser = new User(
@@ -250,7 +249,7 @@ export async function deleteUser(
           const docRef = doc.ref;
           docRef.delete().catch((err) => {
             serviceResponse = new ServiceResponse(
-              "Update User Service",
+              "Delete User Service",
               "Couldn't delete user."
             );
             return serviceResponse;
