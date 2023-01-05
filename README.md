@@ -1,6 +1,6 @@
-# **_Flashcard App API_ v1.0**
+# **_Flashcard App API_ v1.5**
 
-**\*Note: This API is currently undergoing a refactoring process mainly in order to organize functions into services, implement DTO's for the entities, and implement async functions, and standardizing the response format across endpoints.**
+**\*Note: This API recently finished undergoing a refactoring process in which DTO's, services, routers, controllers, asynchronous functions and more were implmeneted. This changes were mostly in the code and meant for type safety and performace. All functions should work as intended.**
 
 ### _This is a RESTful API designed to connect with the client side of any flashcard app through HTML request in order to provide said app with basic back-end functionalities. The API is written in typescript using express.js and it implements Firebase's Firestore as a database, FIrebase's auth as an auth provider, and Firebase Cloud Functions for scaling._
 
