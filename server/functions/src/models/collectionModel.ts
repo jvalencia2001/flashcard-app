@@ -4,11 +4,16 @@ class Collection {
   private _userID: string;
   private _createdAt: number;
 
-  constructor(name: string, userID: string, description?: string) {
+  constructor(
+    name: string,
+    userID: string,
+    description?: string,
+    date?: number
+  ) {
     this._name = name;
     this._userID = userID;
     this._description = description;
-    this._createdAt = Date.now();
+    this._createdAt = date ? date : Date.now();
   }
 
   forDatabase() {

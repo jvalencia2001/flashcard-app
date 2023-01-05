@@ -1,9 +1,9 @@
 export class CollectionDTO {
-  _name: string;
-  _description?: string;
-  _userID: string;
-  _createdAt: number;
-  _collectionID: string;
+  name: string;
+  description?: string;
+  userID: string;
+  createdAt: number;
+  collectionID: string;
 
   constructor(
     name: string,
@@ -12,34 +12,34 @@ export class CollectionDTO {
     id: string,
     description?: string
   ) {
-    this._name = name;
-    this._userID = userID;
-    this._description = description;
-    this._createdAt = date;
-    this._collectionID = id;
+    this.name = name;
+    this.userID = userID;
+    this.description = description;
+    this.createdAt = date;
+    this.collectionID = id;
   }
 }
 
 export class CreateCollectionDTO {
-  _name: string;
-  _description?: string;
-  _userID: string;
+  name: string;
+  description?: string;
+  userID: string;
 
   constructor(name: string, userID: string, description?: string) {
-    this._name = name;
-    this._userID = userID;
-    this._description = description;
+    this.name = name;
+    this.userID = userID;
+    this.description = description;
   }
 }
 
 export class UpdateCollectionDTO {
-  _name: string;
-  _description?: string;
-  _userID: string;
+  name: string;
+  description?: string;
+  userID: string;
 
   constructor(name: string, userID: string, description?: string) {
-    this._name = name;
-    this._userID = userID;
-    this._description = description;
+    this.name = name;
+    this.userID = userID;
+    this.description = description;
   }
 }

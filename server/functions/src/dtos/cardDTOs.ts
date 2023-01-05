@@ -1,37 +1,45 @@
 export class CardDTO {
-  _name: string;
-  _content: string;
-  _collectionID: string;
-  _createdAt: number;
+  name: string;
+  content: string;
+  cardID: string;
+  collectionID: string;
+  createdAt: number;
 
-  constructor(name: string, content: string, collectionID: string) {
-    this._name = name;
-    this._content = content;
-    this._collectionID = collectionID;
-    this._createdAt = Date.now();
+  constructor(
+    name: string,
+    content: string,
+    collectionID: string,
+    cardID: string,
+    date: number
+  ) {
+    this.name = name;
+    this.content = content;
+    this.cardID = cardID;
+    this.collectionID = collectionID;
+    this.createdAt = date;
   }
 }
 
 export class CreateCardDTO {
-  _name: string;
-  _content: string;
-  _collectionID: string;
+  name: string;
+  content: string;
+  collectionID: string;
 
   constructor(name: string, content: string, collectionID: string) {
-    this._name = name;
-    this._content = content;
-    this._collectionID = collectionID;
+    this.name = name;
+    this.content = content;
+    this.collectionID = collectionID;
   }
 }
 
 export class UpdateCardDTO {
-  _name: string;
-  _content: string;
-  _collectionID: string;
+  name: string;
+  content: string;
+  collectionID: string;
 
   constructor(name: string, content: string, collectionID: string) {
-    this._name = name;
-    this._content = content;
-    this._collectionID = collectionID;
+    this.name = name;
+    this.content = content;
+    this.collectionID = collectionID;
   }
 }
